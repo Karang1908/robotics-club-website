@@ -12,7 +12,7 @@ User-confirmed: Next.js, React, and Node.js.
 
 ## Users
 
-Students and visitors looking for the Robotics Club at BITS Pilani Dubai Campus, its lab areas, people, announcements, and a way to contact the club. A separate authorized administrator maintains the site.
+Students and visitors looking for the Robotics Club at BITS Pilani Dubai Campus, its lab areas, people, announcements, and a way to contact the club. Club staff maintain the site by editing one content file.
 
 ## Product Purpose
 
@@ -23,9 +23,9 @@ Introduce the club, feature robot categories from its lab facilities, publish ne
 - Public homepage keeps the robot showcase in the center and news on the right at desktop size.
 - Showcase changes automatically and can be controlled manually.
 - Public navigation retains Home, Members, News, Lab Facilities, and Contact.
-- Admin is authenticated and has no public navigation reference.
-- Admin edits public content, images, navigation, labels, and appearance accent; it receives contact messages.
-- Deployment requires a Node server and persistent writable storage.
+- Standalone static site: no database, server code or accounts. All content (text, navigation, news, members, facilities, contact details, accent colour) lives in `content/site.js`; pictures live in `public/images/`.
+- Deploys to Vercel straight from GitHub; every push republishes.
+- The contact form opens the visitor's email app addressed to the club, because nothing is stored by the site.
 
 ## Brand Commitments
 
@@ -41,4 +41,4 @@ Name: Robotics Club, BITS Pilani Dubai Campus. The user's sketch is the layout r
 
 - Put the club, machines, and latest news within immediate view.
 - Keep unverified content visibly provisional.
-- Let authorized club staff update content without code changes.
+- Let club staff update content by editing a single, commented file.
