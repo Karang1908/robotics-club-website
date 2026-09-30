@@ -1,71 +1,58 @@
 # Robotics Club website
 
-Website for the Robotics Club at BITS Pilani Dubai Campus, built with Next.js. Visitors see a one-screen homepage with a robot showcase and a news column, plus pages for members, news, lab facilities and contact.
+A Next.js site for the Robotics Club at BITS Pilani Dubai Campus. The public homepage is designed to fit one desktop viewport, with an automatic robot showcase and a news rail. The private editor is at `/admin`; the public site never links to it.
 
-It is a **standalone static site**: no database, no server code, no accounts, no environment variables. All text lives in one file, `content/site.js`. You edit it, push to GitHub, and Vercel rebuilds and publishes the site.
+## Run locally
 
-- **Pages:** `/`, `/news`, `/lab-facilities`, `/members/council`, `/members/faculty`, `/contact`
-- **Runs on:** Vercel (or anything that can run `next build`), Node.js 22
-
-## Deploy to Vercel
-
-1. Push this repository to GitHub (it already is).
-2. In Vercel choose **Add New > Project**, pick the repository, leave every setting as detected (Framework: Next.js), and click **Deploy**.
-3. That is all. Open the `.vercel.app` address Vercel gives you.
-4. To use your own domain, add it under **Settings > Domains**. Link previews and the sitemap pick it up automatically.
-
-From then on, every push to the main branch publishes a new version, and every pull request gets its own preview address.
-
-## Change what the site says
-
-Open `content/site.js` (on GitHub you can click the pencil icon, edit, and commit). Each section has a comment explaining it.
-
-| To change | Edit in `content/site.js` |
-| --- | --- |
-| Club name, logo, header links | `brand`, `navigation` |
-| Homepage heading, buttons, rotating pictures | `home`, `robots` |
-| Add an announcement | `news`: copy the commented example, fill it in, set `published: true` |
-| Add a lab facility | `facilities` |
-| Add a council or faculty member | `members`: copy the commented example, set `group` to `'council'` or `'faculty'` |
-| Page headings and descriptions | `pages` |
-| Contact email, location, social links | `contact` |
-| Footer, search title and description, accent colour | `footer`, `seo`, `theme` |
-| Small labels and empty-state messages | `ui` |
-
-**Pictures:** put the file in `public/images/` and refer to it as `'/images/file-name.jpg'`. Keep photos under about 300 KB (resize to roughly 1600 px wide), since they load on the visitor's phone.
-
-**Contact form:** the site has no server, so the form does not store anything. Once you fill in `contact.email`, the Contact page shows a form that opens the visitor's own email app with their message ready to send to that address. Until an email is set, the page says contact details are coming soon. If you later want messages to arrive without the visitor's email app, add a form service such as Formspree or a Google Form link.
-
-News starts empty on purpose, and so do the member lists, so nothing unverified is published. The three bundled robot photos are **illustrative concept images**, not photos of the campus lab. Replace them with real photos before presenting them as the actual facilities.
-
-## Run it on your computer
+Use Node.js 20.9 or newer.
 
 ```bash
 npm install
-npm run dev        # http://localhost:3000, updates as you edit
+cp .env.example .env.local
+npm run dev
 ```
 
-To check the production build the way Vercel makes it:
+Open `http://localhost:3000`. Set `ADMIN_SETUP_TOKEN` in `.env.local` to a random string of at least 24 characters, restart the app, then visit `http://localhost:3000/admin` to create the first administrator. The setup key and a password of at least 12 characters are required. After the account is created, remove `ADMIN_SETUP_TOKEN` and restart.
 
-```bash
-npm run build
-npm run start
+Generate a setup key with `openssl rand -hex 32`. Keep it private.
+
+## Admin features
+
+The editor changes the club identity and logo, navigation, homepage text, robot slides, announcements, lab facilities, member profiles, page headings, contact details, social links, footer, search metadata, accent color, and smaller public labels. It accepts JPEG, PNG and WebP uploads up to 5 MB. The Advanced tab exposes the full content document. News starts as a draft and appears publicly only after it is published and saved. Contact form submissions appear in the Inbox.
+
+The three bundled robot images are **illustrative concepts**, not photos of the campus lab. Replace them in the editor before presenting them as documentation of the actual facilities. The reference site had no real news or named members, so those sections start empty.
+
+## College server deployment
+
+This is a Node server application. The server needs Node.js 20.9+, a persistent writable directory, and a reverse proxy such as Nginx or Apache that forwards requests to the Node process.
+
+1. Copy the project to the server and run `npm install` and `npm run build`.
+2. Set `DATA_DIR` to an **absolute path** outside a temporary deployment directory, such as `/srv/robotics-club/data`. Make it writable by the Node process. It stores the admin account, edited content, uploaded images, and contact messages.
+3. Set `SITE_ORIGIN` to the exact public origin, such as `https://robotics.example.edu`.
+4. Set a long `ADMIN_SETUP_TOKEN` for first-time setup. Remove it after creating the admin account.
+5. Start the app with `npm run start` and proxy the public HTTPS domain to its local port (default 3000).
+6. Back up `DATA_DIR` regularly. Keep it outside the web server's static document root. Use one Node instance with this file-backed store.
+
+Example production environment:
+
+```text
+NODE_ENV=production
+DATA_DIR=/srv/robotics-club/data
+SITE_ORIGIN=https://robotics.example.edu
+PORT=3000
 ```
 
-## Project layout
+The app requires a running Node process. It cannot be deployed as static files or served by PHP alone, because editing, uploads, authentication, and contact messages use server routes.
 
-```
-content/site.js   all the text and settings (the file you edit)
-public/images/    pictures
-app/              pages, global styles, font, icon
-components/       header, showcase carousel, contact form
-lib/              small helpers
-```
+## Routes
 
-Design notes are in `DESIGN.md` and product intent in `PRODUCT.md`.
+- `/` — one-view homepage
+- `/news` — published announcements
+- `/lab-facilities` — facility entries
+- `/members/council` and `/members/faculty` — people
+- `/contact` — public contact form
+- `/admin` — private editor and inbox
 
-## Notes
+## Content storage
 
-- Every page is built ahead of time and served from Vercel's CDN, so the site is fast and there is nothing to keep running. The footer year refreshes daily.
-- Pages are sent with clickjacking, content-type and referrer protections (`next.config.mjs`).
-- Optional: set `SITE_ORIGIN` (for example `https://robotics.example.edu`) in Vercel's environment variables only if link previews show the wrong address. Normally Vercel supplies it.
+Default content is in `lib/default-site.js`. The first admin save creates `site.json` in `DATA_DIR`; subsequent edits use that file. Admin authentication is stored in `auth.json`, and contact messages in `messages.json`. Uploaded media lives in `DATA_DIR/media` and is served through `/api/media/...`. The `storage` folder in this repository is for local development and is ignored by Git except for `.gitkeep`.

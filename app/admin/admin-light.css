@@ -1,0 +1,19 @@
+.admin-shell, .admin-auth-wrap, .admin-loading { font-family: var(--font-body); }
+.admin-shell { background: #f7f7f1; color: #24332b; }
+.admin-topbar h1, .admin-card h2, .admin-list-head h3, .admin-auth h1 { font-family: var(--font-display); font-weight: 600; letter-spacing: -.025em; }
+.admin-sidebar { background: #eaf0e8; color: #24332b; border-right: 1px solid #d5dfd3; }
+.admin-logo { border-color: #d0dccf; }
+.admin-logo > span { background: #426c50; color: white; }
+.admin-logo small { color: #65776a; }
+.admin-sidebar nav button, .admin-sidebar-bottom button, .admin-sidebar-bottom a { color: #526657; }
+.admin-sidebar nav button:hover, .admin-sidebar nav button.selected { background: #d8e5d7; color: #24332b; }
+.admin-sidebar nav button.selected { box-shadow: inset 2px 0 0 #426c50; }
+.admin-sidebar-bottom { border-color: #d0dccf; }
+.admin-sidebar-bottom a:hover, .admin-sidebar-bottom button:hover { color: #355a41; }
+.admin-topbar, .admin-card, .admin-list { background: #fffefa; }
+.admin-primary { background: #426c50; border-color: #426c50; }
+.admin-primary:hover { background: #355a41; }
+.admin-loading { background: #f7f7f1; color: #426c50; }
+.admin-auth-wrap { background: #f7f7f1; }
+.admin-auth { background: #fffefa; border: 1px solid #dce3d8; box-shadow: 0 16px 45px #24332b12; }
+.admin-auth-mark span { color: #426c50; }
