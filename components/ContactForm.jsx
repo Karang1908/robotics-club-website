@@ -2,22 +2,31 @@
 
 import { useState } from 'react';
 import { ArrowIcon } from './Icons';
+import { mailtoLink } from '../lib/format';
 
+// There is no server behind this site, so the form prepares an email in the visitor's own mail
+// app, addressed to the club. Nothing is stored or sent by the website itself.
 export default function ContactForm({ contact, ui }) {
-  const [status, setStatus] = useState('');
-  const [sending, setSending] = useState(false);
-  async function submit(event) {
+  const [opened, setOpened] = useState(false);
+
+  function submit(event) {
     event.preventDefault();
-    const form = event.currentTarget;
-    setSending(true); setStatus('');
-    const values = Object.fromEntries(new FormData(form));
-    try {
-      const response = await fetch('/api/contact', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(values) });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result.error || 'Unable to send your message.');
-      setStatus(contact.successText); form.reset();
-    } catch (error) { setStatus(error.message); }
-    finally { setSending(false); }
+    window.location.href = mailtoLink(contact.email, Object.fromEntries(new FormData(event.currentTarget)));
+    setOpened(true);
   }
-  return <form className="contact-form" onSubmit={submit}><h2>{contact.formHeading}</h2><div className="form-row"><label>{ui.contactNameLabel}<input required name="name" autoComplete="name" maxLength="120" /></label><label>{ui.contactFormEmailLabel}<input required name="email" type="email" autoComplete="email" maxLength="200" /></label></div><label>{ui.contactMessageLabel}<textarea required name="message" minLength="5" maxLength="5000" rows="5" /></label><label className="honeypot" aria-hidden="true">Website<input name="website" tabIndex="-1" autoComplete="off" /></label><div className="form-bottom"><button className="button-primary" type="submit" disabled={sending}>{sending ? 'Sending...' : contact.formButton}<ArrowIcon /></button><p role="status">{status}</p></div></form>;
+
+  return <form className="contact-form" onSubmit={submit}>
+    <h2>{contact.formHeading}</h2>
+    <div className="form-row">
+      <label>{ui.contactNameLabel}<input required name="name" autoComplete="name" maxLength={120} /></label>
+      <label>{ui.contactFormEmailLabel}<input required name="email" type="email" autoComplete="email" maxLength={200} /></label>
+    </div>
+    <label>{ui.contactMessageLabel}<textarea required name="message" minLength={5} maxLength={5000} rows={5} /></label>
+    <div className="form-bottom">
+      <button className="button-primary" type="submit">{contact.formButton}<ArrowIcon /></button>
+      <p className={`form-status${opened ? ' is-success' : ''}`} role="status">
+        {opened && <>{contact.successText} If nothing opens, write to <a href={`mailto:${contact.email}`}>{contact.email}</a>.</>}
+      </p>
+    </div>
+  </form>;
 }

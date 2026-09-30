@@ -1,27 +1,33 @@
 # Design system
 
-The public site uses a quiet, light editorial interface: cream surfaces, deep green type, and a muted sage accent. The desktop homepage stacks the club introduction over the robot showcase, with a slim vertical news rail alongside both. The design gives the lab image the largest share of the viewport while keeping announcements visible. Inner pages reuse the same header, type scale, lines, and accent.
+A simple, light interface for a college site: white and soft grey-green surfaces, dark green-black text, and one accent colour. The layout is unchanged from the original concept. On desktop the homepage is one screen: the club introduction sits over the robot showcase, with a slim news column beside both. Inner pages reuse the same header, footer, type scale and accent.
 
 ## Tokens
 
-- Background `#f7f7f1`, panel `#fffefa`, text `#24332b`, muted `#627368`.
-- Accent defaults to `#426c50` and can be changed in the admin.
-- Borders are thin and soft green-gray; image frames and controls use restrained 4–8px radii.
-- Self-hosted DM Sans for reading and headings, Chakra Petch for short technical labels and the club identity, and a system monospace stack only for carousel numbering.
+- Page `#f8f9f6`, cards `#ffffff`, footer `#f0f3ee`, text `#1c2a22`, muted text `#56665c`, lines `#dce3da`.
+- The accent defaults to `#426c50` and is set in `content/site.js`. The page shell sets `--accent` and `--on-accent` (white or near-black, chosen for readability); hover, soft and tint colours are derived from it with `color-mix`.
+- Radii: 6px controls, 10-12px cards. No shadows except the open Members menu.
+- One typeface: DM Sans, self-hosted as a 44 KB Latin woff2 through `next/font`. System fonts cover anything else.
+- Body 16px; small text never drops below 12px. Headings use modest negative tracking.
 
-## Behavior
+## Layout
 
-- Robot showcase changes every 6.5 seconds, pauses on hover or keyboard focus, and stops autoplay for reduced-motion users.
-- Manual carousel controls are buttons with names and a current state.
-- Desktop homepage occupies one viewport at ordinary laptop heights; mobile stacks content with natural scrolling.
-- Inner-page headings sit near the header, and the current Contact, News, Lab Facilities, and Members content fits with the footer in a standard desktop viewport. Phones keep natural scrolling for readable content and usable forms.
-- Longer News, Lab Facilities, and Members collections use page controls to keep the default desktop view compact as content is added.
-- The header uses the official campus wordmark, a separate club identity, and a Members dropdown with council and faculty links. Mobile navigation opens from a menu button.
-- The footer keeps club identity, a short note, copyright, and quick links together without adding a large section to the homepage.
-- Public links and form inputs show visible focus states.
+- Header, page content and footer share one container (max 1320px) so their left edges line up.
+- Desktop (1101px and up): homepage fills one viewport. Intro heading left, short description and buttons right; showcase below with the image left and details right; news column on the right.
+- Tablet (up to 1100px): the showcase card stacks image over details and the page scrolls.
+- Phones (up to 900px): one column, with a Menu button instead of the header links.
+- Facilities, members and news use page controls so the default view stays compact as content grows (4, 6 and 3 items per page).
+
+## Behaviour and accessibility
+
+- The showcase advances every 6.5 seconds, pauses on hover or focus, has a Pause/Play button, and does not autoplay for visitors who prefer reduced motion.
+- The Members menu opens on hover, click, or the Down Arrow key; Escape closes it and returns focus.
+- A "Skip to content" link is the first tab stop. Focus rings are always visible. Current page links use `aria-current`.
+- Images carry alt text; decorative ones are empty. Illustrative images show a visible note on the picture.
+- The contact form opens the visitor's email app (there is no server) and announces that it did so.
 
 ## Imagery
 
-The bundled lab visuals are generated concepts. Each is labeled as illustrative. Admin-uploaded actual lab photos can replace them.
+The bundled lab visuals are generated concepts, each labelled as illustrative. Real photos replace them by dropping files into `public/images/` and pointing `content/site.js` at them. The bundled images are 1600px wide JPEGs, about 100 KB each.
 
-The default header wordmark is copied from the [official BITS Pilani Dubai Campus site](https://www.bits-pilani.ac.in/dubai/) and is stored locally at `public/images/bits-dubai-campus-logo.webp`.
+The default header wordmark is copied from the [official BITS Pilani Dubai Campus site](https://www.bits-pilani.ac.in/dubai/) and stored locally at `public/images/bits-dubai-campus-logo.webp`.
