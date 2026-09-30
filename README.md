@@ -22,6 +22,22 @@ The editor changes the club identity and logo, navigation, homepage text, robot 
 
 The three bundled robot images are **illustrative concepts**, not photos of the campus lab. Replace them in the editor before presenting them as documentation of the actual facilities. The reference site had no real news or named members, so those sections start empty.
 
+## Vercel + Supabase deployment
+
+Vercel cannot save files, so on Vercel the site stores its content, admin account, contact messages and uploaded images in Supabase.
+
+1. Create a Supabase project. Open **SQL Editor**, paste the contents of `supabase/setup.sql`, and click **Run**. This creates two locked tables and a public `media` bucket for images.
+2. In Supabase, open **Project Settings > API** and copy the **Project URL** and the **service_role** secret key.
+3. In Vercel, import this repository. Under **Settings > Environment Variables** add:
+   - `SUPABASE_URL`: the Project URL
+   - `SUPABASE_SERVICE_ROLE_KEY`: the service_role key. It is only used on the server; never put it in a `NEXT_PUBLIC_` variable.
+   - `ADMIN_SETUP_TOKEN`: a random value of 24+ characters (`openssl rand -hex 32`)
+   - `SITE_ORIGIN`: the address you open the site on, e.g. `https://your-site.vercel.app`, or leave it unset
+4. Deploy (or redeploy after adding variables), open `/admin`, and create the admin account with the setup key.
+5. Delete `ADMIN_SETUP_TOKEN` in Vercel and redeploy.
+
+`.env.example` lists the same variables with explanations. Image uploads are limited to 4 MB because Vercel rejects larger requests. Without the Supabase variables (for example on your own computer), the site saves to files in `DATA_DIR` as before.
+
 ## College server deployment
 
 This is a Node server application. The server needs Node.js 20.9+, a persistent writable directory, and a reverse proxy such as Nginx or Apache that forwards requests to the Node process.

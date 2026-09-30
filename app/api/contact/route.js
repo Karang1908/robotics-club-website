@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { randomUUID } from 'node:crypto';
-import { getMessages, saveMessages } from '../../../lib/store';
+import { addMessage } from '../../../lib/store';
 import { sameOrigin } from '../../../lib/auth';
 
 export const runtime = 'nodejs';
@@ -18,8 +18,6 @@ export async function POST(request) {
   const now = Date.now();
   if (now - (lastRequest.get(ip) || 0) < 30_000) return NextResponse.json({ error: 'Please wait a moment before sending another message.' }, { status: 429 });
   lastRequest.set(ip, now);
-  const messages = await getMessages();
-  messages.unshift({ id: randomUUID(), name, email, message, date: new Date().toISOString() });
-  await saveMessages(messages.slice(0, 1000));
+  await addMessage({ id: randomUUID(), name, email, message, date: new Date().toISOString() });
   return NextResponse.json({ ok: true });
 }
