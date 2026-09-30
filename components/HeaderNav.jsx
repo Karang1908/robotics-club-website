@@ -61,9 +61,8 @@ export default function HeaderNav({ navigation, councilLabel, facultyLabel }) {
             {item.label}<svg className="nav-chevron" width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="m3.5 6 4.5 4 4.5-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
           <div id="member-subnav" className="member-dropdown" hidden={!membersOpen}>
-            <span className="member-dropdown-heading"><span>Our people</span><span>01 / 02</span></span>
-            <Link href="/members/council" className={pathname === '/members/council' ? 'current' : ''} aria-current={pathname === '/members/council' ? 'page' : undefined} onClick={closeMenus}><span className="member-dropdown-number" aria-hidden="true">01</span><span className="member-dropdown-copy"><strong>{councilLabel}</strong><small>Student leadership</small></span><span className="member-dropdown-arrow" aria-hidden="true">↗</span></Link>
-            <Link href="/members/faculty" className={pathname === '/members/faculty' ? 'current' : ''} aria-current={pathname === '/members/faculty' ? 'page' : undefined} onClick={closeMenus}><span className="member-dropdown-number" aria-hidden="true">02</span><span className="member-dropdown-copy"><strong>{facultyLabel}</strong><small>Faculty advisers</small></span><span className="member-dropdown-arrow" aria-hidden="true">↗</span></Link>
+            <Link href="/members/council" className={pathname === '/members/council' ? 'current' : ''} aria-current={pathname === '/members/council' ? 'page' : undefined} onClick={closeMenus}><span className="member-dropdown-copy"><strong>{councilLabel}</strong><small>Student leadership</small></span></Link>
+            <Link href="/members/faculty" className={pathname === '/members/faculty' ? 'current' : ''} aria-current={pathname === '/members/faculty' ? 'page' : undefined} onClick={closeMenus}><span className="member-dropdown-copy"><strong>{facultyLabel}</strong><small>Faculty advisers</small></span></Link>
           </div>
         </div> :
         <Link key={`${item.href}-${index}`} href={item.href} className={`nav-link${pathname === item.href ? ' active' : ''}`} aria-current={pathname === item.href ? 'page' : undefined} onClick={closeMenus}>{item.label}</Link>
