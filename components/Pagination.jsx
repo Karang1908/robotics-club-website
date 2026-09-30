@@ -1,12 +1,17 @@
 import Link from 'next/link';
 
-const hrefFor = (path, page) => (page === 1 ? path : `${path}/page/${page}`);
+export function paginate(items, requestedPage, pageSize) {
+  const totalPages = Math.max(1, Math.ceil(items.length / pageSize));
+  const requested = Number(requestedPage);
+  const page = Number.isInteger(requested) && requested > 0 ? Math.min(requested, totalPages) : 1;
+  return { page, totalPages, visible: items.slice((page - 1) * pageSize, page * pageSize) };
+}
 
 export function Pagination({ page, totalPages, path }) {
   if (totalPages < 2) return null;
-  return <nav className="page-pagination" aria-label="Pages">
-    {page > 1 ? <Link href={hrefFor(path, page - 1)} rel="prev">Previous</Link> : <span className="page-control-disabled" aria-disabled="true">Previous</span>}
-    <span aria-current="page">Page {page} of {totalPages}</span>
-    {page < totalPages ? <Link href={hrefFor(path, page + 1)} rel="next">Next</Link> : <span className="page-control-disabled" aria-disabled="true">Next</span>}
+  return <nav className="page-pagination" aria-label="Page navigation">
+    {page > 1 ? <Link href={`${path}?page=${page - 1}`}>Previous</Link> : <span className="page-control-disabled">Previous</span>}
+    <span>Page {page} of {totalPages}</span>
+    {page < totalPages ? <Link href={`${path}?page=${page + 1}`}>Next</Link> : <span className="page-control-disabled">Next</span>}
   </nav>;
 }
