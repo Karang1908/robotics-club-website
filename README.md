@@ -1,4 +1,4 @@
-# Robotics Club website
+# Robotics Club website (in dev)
 
 A Next.js site for the Robotics Club at BITS Pilani Dubai Campus. The public homepage is designed to fit one desktop viewport, with an automatic robot showcase and a news rail. The private editor is at `/admin`; the public site never links to it.
 
